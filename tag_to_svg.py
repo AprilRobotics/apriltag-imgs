@@ -39,14 +39,19 @@ parser.add_argument(
 
 def gen_apriltag_svg(width, height, pixel_array, size):
     def gen_rgba(rbga):
-        (_r, _g, _b, _raw_a) = rbga
+        (_r, _g, _b, _) = rbga
+        return f'rgb({_r}, {_g}, {_b})'
+
+    def gen_rgb_opa(rbga):
+        (_, _, _, _raw_a) = rbga
         _a = _raw_a / 255
-        return f'rgba({_r}, {_g}, {_b}, {_a})'
+        return f'{_a}'
 
     def gen_gridsquare(row_num, col_num, pixel):
-        _rgba = gen_rgba(pixel)
+        _rgb = gen_rgba(pixel)
+        _opa = gen_rgb_opa(pixel)
         _id = f'box{row_num}-{col_num}'
-        return f'\t<rect width="1" height="1" x="{row_num}" y="{col_num}" fill="{_rgba}" id="{_id}"/>\n'
+        return f'\t<rect width="1" height="1" x="{row_num}" y="{col_num}" fill="{_rgb}" fill-opacity="{_opa}" id="{_id}"/>\n'
 
     svg_text = '<?xml version="1.0" standalone="yes"?>\n'
     svg_text += f'<svg width="{size}" height="{size}" viewBox="0,0,{width},{height}" xmlns="http://www.w3.org/2000/svg">\n'
